@@ -16,6 +16,11 @@ class Authorize
      */
     public function handle($request, $next)
     {
+
+        if (! $request->user()) {
+            abort(401); // Let Nova's Authenticate middleware handle the redirect
+        }
+        
         $tool = collect(Nova::registeredTools())->first([$this, 'matchesTool']);
 
         return optional($tool)->authorize($request) ? $next($request) : abort(403);
